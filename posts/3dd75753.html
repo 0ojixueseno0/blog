@@ -1,0 +1,403 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>使用Winhex进行数据恢复（11） | Hello! I'm 0o酱</title><meta name="keywords" content="Winhex,数据恢复,exFAT,文件系统"><meta name="author" content=" 0o酱"><meta name="copyright" content=" 0o酱"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="知识点总览：1.exFAT 文件系统的特点2.exFAT 文件系统的结构3.exFAT 文件系统的 DBR 分析">
+<!-- hexo-inject:begin --><!-- hexo-inject:end --><meta property="og:type" content="article">
+<meta property="og:title" content="使用Winhex进行数据恢复（11）">
+<meta property="og:url" content="https://blog.im0o.top/posts/3dd75753.html">
+<meta property="og:site_name" content="Hello! I&#39;m 0o酱">
+<meta property="og:description" content="知识点总览：1.exFAT 文件系统的特点2.exFAT 文件系统的结构3.exFAT 文件系统的 DBR 分析">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://image.im0o.top/files/202112162024603.png">
+<meta property="article:published_time" content="2021-12-08T06:48:55.000Z">
+<meta property="article:modified_time" content="2022-05-24T06:19:06.175Z">
+<meta property="article:author" content=" 0o酱">
+<meta property="article:tag" content="Winhex">
+<meta property="article:tag" content="数据恢复">
+<meta property="article:tag" content="exFAT">
+<meta property="article:tag" content="文件系统">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://image.im0o.top/files/202112162024603.png"><link rel="shortcut icon" href="https://image.im0o.top/files/202112021204213.jpg"><link rel="canonical" href="https://blog.im0o.top/posts/3dd75753"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><script async="async" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script><script>(adsbygoogle = window.adsbygoogle || []).push({
+  google_ad_client: 'ca-pub-3350696623728919',
+  enable_page_level_ads: 'true'
+});</script><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"search.xml","languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: {"defaultEncoding":2,"translateDelay":0,"msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"簡"},
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    jQuery: 'https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js',
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/js/jquery.justifiedGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/css/justifiedGallery.min.css'
+    },
+    fancybox: {
+      js: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isanchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = { 
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2022-05-24 14:19:06'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    })(window)</script><link rel="stylesheet" href="/css/custom.css"><meta name="generator" content="Hexo 5.4.0"><link rel="alternate" href="/atom.xml" title="Hello! I'm 0o酱" type="application/atom+xml"><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+</head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="author-avatar"><img class="avatar-img" src="https://image.im0o.top/files/202112021204213.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data"><div class="data-item is-center"><div class="data-item-link"><a href="/archives/"><div class="headline">文章</div><div class="length-num">37</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/tags/"><div class="headline">标签</div><div class="length-num">52</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/categories/"><div class="headline">分类</div><div class="length-num">6</div></a></div></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" target="_blank" rel="noopener" href="https://im0o.top"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fab fa-blogger-b"></i><span> 博客</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时光机</span></a></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> 索引</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page" href="/categories/%E6%97%A5%E8%AE%B0/"><i class="fa-fw fas fa-book"></i><span> 日记</span></a></li><li><a class="site-page" href="/photos/"><i class="fa-fw fas fa-images"></i><span> 照片</span></a></li><li><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></li><li><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://image.im0o.top/files/202112081654172.png')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">Hello! I'm 0o酱</a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" target="_blank" rel="noopener" href="https://im0o.top"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fab fa-blogger-b"></i><span> 博客</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时光机</span></a></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> 索引</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page" href="/categories/%E6%97%A5%E8%AE%B0/"><i class="fa-fw fas fa-book"></i><span> 日记</span></a></li><li><a class="site-page" href="/photos/"><i class="fa-fw fas fa-images"></i><span> 照片</span></a></li><li><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></li><li><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">使用Winhex进行数据恢复（11）</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2021-12-08T06:48:55.000Z" title="发表于 2021-12-08 14:48:55">2021-12-08</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2022-05-24T06:19:06.175Z" title="更新于 2022-05-24 14:19:06">2022-05-24</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/Winhex%E6%95%B0%E6%8D%AE%E6%81%A2%E5%A4%8D%E6%95%99%E7%A8%8B/">Winhex数据恢复教程</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>本节将学习 exFAT 文件系统的特点、结构及引导扇区。</p>
+<!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="note info modern"><p>你可以前往 <a target="_blank" rel="noopener" href="https://docs.microsoft.com/zh-cn/windows/win32/fileio/exfat-specification">exFAT 文件系统规范 - Win32 apps | Microsoft Docs</a> 查看 Microsoft 官方对 exFAT 文件系统的描述。</p>
+</div>
+
+<h1 id="知识点总览"><a href="#知识点总览" class="headerlink" title="知识点总览"></a>知识点总览</h1><ul>
+<li>exFAT 文件系统的特点</li>
+<li>exFAT 文件系统的结构</li>
+<li>exFAT 文件系统的 DBR 分析</li>
+</ul>
+<h1 id="exFAT-文件系统的特点"><a href="#exFAT-文件系统的特点" class="headerlink" title="exFAT 文件系统的特点"></a>exFAT 文件系统的特点</h1><blockquote>
+<p>本小节多为 exFAT 相关理论，与实操无关，可以跳过本小节。</p>
+</blockquote>
+<p>exFAT全称为Extended File Allocation Table File System，即扩展文件分配表，是微软在Windows Embeded 6.0（包括Windows CE 6.0、Windows Mobile）中引入的一种适合于闪存的文件系统。</p>
+<div class="note modern"><p><strong>exFAT 专为满足当今数字媒体的需求而构建，无论使用何种设备或操作系统，exFAT 均可使用永久性或可移动媒体进行无缝文件传输和存储。</strong></p>
+<p>消费者和企业正在创造越来越多的高质量照片、视频和其他数字媒体。 一旦创建，该媒体就需要在多个平台和产品之间存储和共享。 云技术可以简化共享流程，但是在许多应用程序中，可移动存储的便利性是无法替代的。</p>
+<p>扩展文件分配表（exFAT）是 Microsoft 专利文件系统。exFAT 可以处理非常大的文件，并可以在使用可移动存储的设备之间进行无缝文件交换，而与设备或操作系统无关。 exFAT 结合了广泛的互操作性和几乎无限规模的文件处理能力，对于寻求有效的文件存储和传输解决方案的公司来说，exFAT 是必不可少的。</p>
+<p>exFAT 只是 Microsoft 授予原始设备制造商（OEM）的一项技术，可帮助他们创建<a target="_blank" rel="noopener" href="https://www.microsoft.com/mtl-mobile-tablet">移动设备和平板电脑</a>，明天的设备<a target="_blank" rel="noopener" href="https://www.microsoft.com/mtl-internet-of-things">物联网</a>。exFAT 还可以用于台式计算机、工业设备、照相机以及许多其他需要互操作文件存储和传输解决方案的设备中。</p>
+<p><em>来源：<a target="_blank" rel="noopener" href="https://www.microsoft.com/zh-cn/legal/intellectualproperty/mtl/exfat-licensing">exFAT 的许可| Microsoft IP 许可</a></em></p>
+</div>
+
+<p>exFAT文件系统跟原来的FAT文件系统相比，主要有以下优点：</p>
+<div class="note modern"><ul>
+<li>可拓展至更大磁盘大小，理论上64ZiB，推荐最大512TiB，相较32位限制的FAT32分区的2TB（每扇区512字节）。</li>
+<li>理论的文件大小限制为264 - 1字节（16 exbibytes - 1），而FAT32文件系统中单一文件限制大小为232 - 1字节（4 GiB）。对于单档超过4 GB的用户来说，exFAT提供了很好的解决方案。</li>
+<li><a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E5%8F%A2%E9%9B%86">簇</a>大小最大可为每<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E6%89%87%E5%8C%BA">扇区</a>225字节，最大32 MB。</li>
+<li>由于采用了<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/w/index.php?title=%E7%A9%BA%E9%A4%98%E7%A9%BA%E9%96%93%E5%B0%8B%E5%9D%80&action=edit&redlink=1">空余空间寻址</a>，空间分配和删除的性能得以改进。</li>
+<li>在单一文件夹内支持超过216个文件。</li>
+<li>支持<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/w/index.php?title=%E5%AD%98%E5%8F%96%E6%8E%A7%E5%88%B6%E6%B8%85%E5%96%AE&action=edit&redlink=1">访问控制清单</a>（但在Windows Vista SP1中尚未支持）。</li>
+<li>提供给OEM的可定义参数可以使这个文件系统适应不同特色的设备。</li>
+<li>支持<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E7%86%B1%E6%8F%92%E6%8B%94">热插拔</a>资料完整无损机制<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/TFAT">Transaction-Safe FAT</a>（TFAT，在<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/WinCE">WinCE</a>中可选的功能）。</li>
+<li>时间戳记能够使用<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/UTC">UTC</a>时间而不仅仅是所在<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E6%99%82%E5%8D%80">时区</a>（从<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/Windows_Vista#Service_Pack_2">Vista SP2</a>开始）</li>
+</ul>
+<p><em>来源：<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/ExFAT">exFAT - 维基百科，自由的百科全书 (wikipedia.org)</a></em></p>
+</div>
+
+<p>exFAT文件系统跟原来的FAT文件系统相比，主要有以下缺点：</p>
+<div class="note modern"><ul>
+<li>某些旧设备（如<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E4%B8%AA%E4%BA%BA%E6%95%B0%E7%A0%81%E5%8A%A9%E7%90%86">个人数码助理</a>（PDA）和<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E6%95%B0%E7%A0%81%E7%9B%B8%E6%9C%BA">数字相机</a>）无法使用exFAT格式的存储卡。</li>
+<li>使用exFAT的设备将不能用<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/Windows_Vista">Windows Vista</a>的<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/ReadyBoost">ReadyBoost</a>功能。（Windows 7 以上版本中的新的exFAT系统支持<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/ReadyBoost">ReadyBoost</a>）</li>
+<li>专利授权方式不明确。夏普、RIM、任天堂分别和微软达成了exFAT授权协议。存在专利费。微软曾经为FAT的一部分申请专利。曾经有用户从三星的Android中分离出不基于FUSE实现的exFAT内核模块代码并按照Linux的GPL协议释放出来，被认为三星得到微软支持下开发的。之后三星也正式释放了相应模块代码。<ul>
+<li>2019年8月，微软公开了exFAT的技术文档，并支持将exFAT功能集成到<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/Linux%E5%86%85%E6%A0%B8">Linux内核</a>中。Linux内核将于版本5.4中提供初步支持。</li>
+</ul>
+</li>
+<li>Windows XP SP3之前的旧版Windows暂时不支持exFAT，Windows XP可以安装修改更新KB955704来支持exFAT，Linux操作系统需要通过第三方开发的文件系统驱动来支持exFAT（例如，<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E8%B0%B7%E6%AD%8C%E5%85%AC%E5%8F%B8">谷歌公司</a>的exfat工具、FUSE exfat、exfat-nofuse、sdfat），Mac OS X可透过升级至10.6.5来全面支持exFAT。</li>
+<li><a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/UEFI">UEFI</a>不支持exFAT，只支持<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/FAT">FAT</a>和<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/FAT32">FAT32</a>，格式化为exFAT的EFI启动磁盘将无法被识别。然而现今支持EFI引导安装的主流操作系统，其安装文件都存在单个文件大于4GB的情况（如<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/Windows_10">Windows 10</a>的<code>install.wim</code>、<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/Linux%E5%8F%91%E8%A1%8C%E7%89%88">Linux发行版</a>放置系统文件的<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/SquashFS">SquashFS</a>映像），显然不能再使用<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/FAT">FAT</a>与<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/FAT32">FAT32</a>。</li>
+</ul>
+<p><em>来源：<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/ExFAT">exFAT - 维基百科，自由的百科全书 (wikipedia.org)</a></em></p>
+</div>
+
+<h1 id="exFAT-文件系统的结构"><a href="#exFAT-文件系统的结构" class="headerlink" title="exFAT 文件系统的结构"></a>exFAT 文件系统的结构</h1><p><img src="https://image.im0o.top/files/202112081635821.jpeg" alt="ExFAT文件系统结构总览"></p>
+<p>exFAT 文件系统是由 DBR 及其保留扇区、FAT、簇位图文件、大写字符文件、用户数据区五个部分组成。</p>
+<p>这些结构是在分区被格式化时创建出来的，它们的含义如下：</p>
+<p><strong>① DBR及其保留扇区</strong>。DBR的全称为DOS Boot Record，含义是DOS引导记录，也称为操作系统引导记录。在DBR之后往往有一些保留扇区，其中12号扇区为DBR的备份。</p>
+<p><strong>② FAT</strong>。FAT的全称为File Allocation Table，含义是文件分配表。</p>
+<blockquote>
+<p>ExFAT一般只有一份FAT，而不像FAT文件系统那样有两个FAT表：FAT1和FAT2。</p>
+</blockquote>
+<p><strong>③ 簇位图文件</strong>。簇位图文件是ExFAT文件系统中的一个元文件，类似于NTFS文件系统中的元文件$BitMap，用来管理分区中簇的使用情况。</p>
+<p><strong>④ 大写字符文件</strong>。是ExFAT文件系统中的第二个元文件，类似于NTFS文件系统中的元文件$UpCase，Unicode字母表中每一个字符在这个文件中都有一个对应的条目，用于比较、排序、计算Hash值等方面。</p>
+<blockquote>
+<p>该文件大小固定为5836字节。</p>
+</blockquote>
+<p><strong>⑤ 用户数据区</strong>。是ExFAT文件系统的主要区域，用来存放用户的文件及目录。</p>
+<h1 id="exFAT-文件系统的-DBR-分析"><a href="#exFAT-文件系统的-DBR-分析" class="headerlink" title="exFAT 文件系统的 DBR 分析"></a>exFAT 文件系统的 DBR 分析</h1><p>ExFAT文件系统的DBR由6部分组成，分别为跳转指令、OEM代号、保留区、BPB参数、引导程序和结束标志。</p>
+<p><img src="https://image.im0o.top/files/202112081654172.png" alt="image-20211208165426103"></p>
+<p><strong>1．跳转指令</strong></p>
+<p>跳转指令本身占用两个字节，它将程序执行流程跳转到引导程序处。例如，当前DBR中的“EB 76”，就是代表汇编语言的“JMP 76”。需要注意该指令本身占用两个字节，计算跳转目标地址时以该指令的下一字节为基准，所以实际执行的下一条指令应该位于78H。紧接着跳转指令的是一条空指令NOP（90H）。</p>
+<p><strong>2．OEM代号</strong></p>
+<p>这部分占8字节，其内容由创建该文件系统的OEM厂商具体安排。例如，微软的Windows Vista系统将此处设置为文件系统类型“ExFAT”。</p>
+<p><strong>3．保留区</strong></p>
+<p>从DBR的0BH～3FH处是原来的FAT文件系统BPB所占用的空间，ExFAT文件系统不使用这些字节。</p>
+<p><strong>4．BPB（BIOS Parameter Block，BIOS参数块）</strong></p>
+<p>ExFAT的BPB从第DBR的40BH偏移处开始，占用56字节，记录了有关该文件系统的重要信息。</p>
+<p><img src="https://image.im0o.top/files/202112081829051.jpeg" alt="ExFAT文件系统的DBR分析"></p>
+<p>（1）0x40～0x47：隐藏扇区数</p>
+<p>隐藏扇区数是指本分区之前使用的扇区数，该值与分区表中所描述的该分区的起始扇区号一致：对于主磁盘分区来讲，是MBR到该分区DBR之间的扇区数；对于扩展分区中的逻辑驱动器来讲，是其EBR到该分区DBR之间的扇区数。</p>
+<p>（2）0x48～0x4F：扇区总数</p>
+<p>扇区总数是指分区的总扇区数，由8字节组成，也就是64位，所以能管理的最大分区为264×512＝273Byte＝8ZB。微软官方网站提供的信息称：ExFAT理论上最大可以支持64ZB的分区，但从这里只能算出8ZB。</p>
+<p>（3）0x50～0x53：FAT起始扇区号</p>
+<p>该值为相对于文件系统起始号扇区而言，也就是从DBR到FAT表之间的扇区数。</p>
+<p>（4）0x54～0x57：FAT扇区数</p>
+<p>是指FAT表包含的扇区数，ExFAT文件系统只有一份FAT表。</p>
+<p>（5）0x58～0x5B：首簇起始扇区号</p>
+<p>该值用来描述文件系统中的第1个簇的起始扇区号。与传统FAT文件系统一样，ExFAT文件系统的第一个簇也是2号簇，通常2号簇分配给簇位图文件使用，因此，该值也就是簇位图文件的起始扇区号。</p>
+<p>（6）0x5C～0x5F：分区内的总簇数</p>
+<p>分区内的总簇数是指从分区内第一个簇算起，到分区末尾所包含的簇的总数。</p>
+<p>（7）0x60～0x63：根目录首簇号</p>
+<p>分区在格式化为ExFAT文件系统时，格式化程序会在数据区中指派一个簇作为ExFAT的根目录区的开始，并把该簇号记录在BPB中。通常分区中的第一个簇被分配给簇位图文件使用，簇位图文件之后是大写字符文件，大写字符文件的下一个簇就根目录的起始位置了。</p>
+<p>（8）0x64～0x67：卷序列号</p>
+<p>卷序列号是格式化程序在创建文件系统时生成的一组4字节的随机数值。</p>
+<p>（9）0x6C～0x6C：每扇区字节数描述</p>
+<p>这个字节用来描述每扇区包含的字节数，描述方法为，假设此处值为N，则每扇区大小字节数为2N。例如，本例中该值为“09”，即每扇区大小字节数为29＝512。</p>
+<p>（10）0x6D～0x6D：每簇扇区数描述</p>
+<p>这个字节用来描述每簇包含的扇区数，描述方法为，假设此处值为N，则每簇扇区数为2N。例如，本例中该值为“06”，即每簇扇区数为26＝64。</p>
+<p>ExFAT文件系统能够支持从512B～32MB的簇大小。</p>
+<p>5．引导程序</p>
+<p>ExFAT的DBR引导程序占用390字节（78H～1FDH）。这部分字节对于ExFAT来说也是很重要的，如果这些数据被破坏，文件系统将无法使用。</p>
+<p>6．结束标志</p>
+<p>ExFAT的DBR结束标志与FAT的DBR结束标志一样，也是“55 AA”。</p>
+<p>在ExFAT的DBR之后还有很多保留扇区，其中12号扇区为DBR的备份，如果DBR遭到破坏，可以用其备份DBR进行修复。</p>
+<script type="text&#x2F;javascript" src="https://cdn.jsdelivr.net/npm/kity@2.0.4/dist/kity.min.js"></script><script type="text&#x2F;javascript" src="https://cdn.jsdelivr.net/npm/kityminder-core@1.4.50/dist/kityminder.core.min.js"></script><script defer="true" type="text&#x2F;javascript" src="https://cdn.jsdelivr.net/npm/hexo-simple-mindmap@0.7.0/dist/mindmap.min.js"></script><link rel="stylesheet" type="text&#x2F;css" href="https://cdn.jsdelivr.net/npm/hexo-simple-mindmap@0.7.0/dist/mindmap.min.css"></article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined"> 0o酱</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://blog.im0o.top/posts/3dd75753.html">https://blog.im0o.top/posts/3dd75753.html</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://blog.im0o.top" target="_blank">Hello! I'm 0o酱</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Winhex/">Winhex</a><a class="post-meta__tags" href="/tags/%E6%95%B0%E6%8D%AE%E6%81%A2%E5%A4%8D/">数据恢复</a><a class="post-meta__tags" href="/tags/exFAT/">exFAT</a><a class="post-meta__tags" href="/tags/%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F/">文件系统</a></div><div class="post_share"><div class="social-share" data-image="https://image.im0o.top/files/202112162024603.png" data-sites="twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><div class="post-reward"><div class="reward-button button--animated"><i class="fas fa-qrcode"></i> 打赏</div><div class="reward-main"><ul class="reward-all"><li class="reward-item"><a href="https://image.im0o.top/gitee/img/20210228084008.png" target="_blank"><img class="post-qr-code-img" src="https://image.im0o.top/gitee/img/20210228084008.png" alt="wechat"/></a><div class="post-qr-code-desc">wechat</div></li><li class="reward-item"><a href="https://image.im0o.top/gitee/img/20210228081408.jpg" target="_blank"><img class="post-qr-code-img" src="https://image.im0o.top/gitee/img/20210228081408.jpg" alt="alipay"/></a><div class="post-qr-code-desc">alipay</div></li></ul></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/posts/76c8cbd5.html"><img class="prev-cover" src="https://what2eat.im0o.top/static/what2eat.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">What2Eat - 吃点啥？</div></div></a></div><div class="next-post pull-right"><a href="/posts/9907963b.html"><img class="next-cover" src="https://image.im0o.top/files/202112072003930.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">使用Winhex进行数据恢复（10）</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span> 相关推荐</span></div><div class="relatedPosts-list"><div><a href="/posts/8bb239d5.html" title="使用Winhex进行数据恢复（13）"><img class="cover" src="https://image.im0o.top/gitee/img/202112211131493.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-12-20</div><div class="title">使用Winhex进行数据恢复（13）</div></div></a></div><div><a href="/posts/330e5eb0.html" title="使用Winhex进行数据恢复（12）"><img class="cover" src="https://image.im0o.top/gitee/img/202112201801290.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-12-17</div><div class="title">使用Winhex进行数据恢复（12）</div></div></a></div><div><a href="/posts/1aa64c01.html" title="使用Winhex进行数据恢复（索引）"><img class="cover" src="https://image.im0o.top/files/202111211858933.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-11-21</div><div class="title">使用Winhex进行数据恢复（索引）</div></div></a></div><div><a href="/posts/85e961fa.html" title="使用Winhex进行数据恢复（9）"><img class="cover" src="https://image.im0o.top/files/202112070938368.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-12-03</div><div class="title">使用Winhex进行数据恢复（9）</div></div></a></div><div><a href="/posts/3d55069f.html" title="使用Winhex进行数据恢复（8）"><img class="cover" src="https://image.im0o.top/files/202112021051917.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-12-02</div><div class="title">使用Winhex进行数据恢复（8）</div></div></a></div><div><a href="/posts/653616c9.html" title="使用Winhex进行数据恢复（7）"><img class="cover" src="https://image.im0o.top/files/202111231058300.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-11-22</div><div class="title">使用Winhex进行数据恢复（7）</div></div></a></div></div></div><hr/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div class="vcomment" id="vcomment"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="card-info-avatar is-center"><img class="avatar-img" src="https://image.im0o.top/files/202112021204213.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/><div class="author-info__name"> 0o酱</div><div class="author-info__description"></div></div><div class="card-info-data"><div class="card-info-data-item is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">37</div></a></div><div class="card-info-data-item is-center"><a href="/tags/"><div class="headline">标签</div><div class="length-num">52</div></a></div><div class="card-info-data-item is-center"><a href="/categories/"><div class="headline">分类</div><div class="length-num">6</div></a></div></div><a class="button--animated" id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/0ojixueseno0"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="/atom.xml" target="_blank" title="RSS"><i class="fas fa-rss"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn card-announcement-animation"></i><span>公告</span></div><div class="announcement_content">“光阴如梦，昨日随风”<br />9.20 更新关于页面<br />11.15 迁移博客至 Vercel 服务<br />12.2 更新头像，感谢@验验！"</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-number">1.</span> <span class="toc-text">前言</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%9F%A5%E8%AF%86%E7%82%B9%E6%80%BB%E8%A7%88"><span class="toc-number">2.</span> <span class="toc-text">知识点总览</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#exFAT-%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F%E7%9A%84%E7%89%B9%E7%82%B9"><span class="toc-number">3.</span> <span class="toc-text">exFAT 文件系统的特点</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#exFAT-%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F%E7%9A%84%E7%BB%93%E6%9E%84"><span class="toc-number">4.</span> <span class="toc-text">exFAT 文件系统的结构</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#exFAT-%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F%E7%9A%84-DBR-%E5%88%86%E6%9E%90"><span class="toc-number">5.</span> <span class="toc-text">exFAT 文件系统的 DBR 分析</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/posts/3723ef87.html" title="2022年3月25日博客更新记录"><img src="https://image.im0o.top/files/202203251648463.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="2022年3月25日博客更新记录"/></a><div class="content"><a class="title" href="/posts/3723ef87.html" title="2022年3月25日博客更新记录">2022年3月25日博客更新记录</a><time datetime="2022-03-25T08:46:52.000Z" title="发表于 2022-03-25 16:46:52">2022-03-25</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/ad82a4d2.html" title="2021觅食记录"><img src="https://image.im0o.top/gitee/img/20220203183226.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="2021觅食记录"/></a><div class="content"><a class="title" href="/posts/ad82a4d2.html" title="2021觅食记录">2021觅食记录</a><time datetime="2022-02-02T01:52:28.000Z" title="发表于 2022-02-02 09:52:28">2022-02-02</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/faf55402.html" title="小记：拿到第二个国家奖学金"><img src="https://image.im0o.top/gitee/img/20220123051429.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="小记：拿到第二个国家奖学金"/></a><div class="content"><a class="title" href="/posts/faf55402.html" title="小记：拿到第二个国家奖学金">小记：拿到第二个国家奖学金</a><time datetime="2022-01-22T20:33:52.000Z" title="发表于 2022-01-23 04:33:52">2022-01-23</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/8bb239d5.html" title="使用Winhex进行数据恢复（13）"><img src="https://image.im0o.top/gitee/img/202112211131493.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="使用Winhex进行数据恢复（13）"/></a><div class="content"><a class="title" href="/posts/8bb239d5.html" title="使用Winhex进行数据恢复（13）">使用Winhex进行数据恢复（13）</a><time datetime="2021-12-20T10:34:50.000Z" title="发表于 2021-12-20 18:34:50">2021-12-20</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/330e5eb0.html" title="使用Winhex进行数据恢复（12）"><img src="https://image.im0o.top/gitee/img/202112201801290.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="使用Winhex进行数据恢复（12）"/></a><div class="content"><a class="title" href="/posts/330e5eb0.html" title="使用Winhex进行数据恢复（12）">使用Winhex进行数据恢复（12）</a><time datetime="2021-12-17T01:32:49.000Z" title="发表于 2021-12-17 09:32:49">2021-12-17</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2022 By  0o酱</div><div class="framework-info"></div><div class="footer_custom_text"><a href="https://icp.gov.moe/?keyword=20210216" target="_blank">萌ICP备20210216号</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="translateLink" type="button" title="简繁转换">繁</button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="chat_btn" type="button" title="rightside.chat_btn"><i class="fas fa-sms"></i></button><a id="to_comment" href="#post-comment" title="直达评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div id="local-search"><div class="search-dialog"><div class="search-dialog__title" id="local-search-title">本地搜索</div><div id="local-input-panel"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div></div><hr/><div id="local-search-results"></div><span class="search-close-button"><i class="fas fa-times"></i></span></div><div id="search-mask"></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="/js/tw_cn.js"></script><script src="/js/search/local-search.js"></script><div class="js-pjax"><script>function loadValine () {
+  function initValine () {
+    let initData = {
+      el: '#vcomment',
+      appId: 'tnbYrgjBNXyv9CGieakQl5Uw-gzGzoHsz',
+      appKey: 'yej0JecfeXMR9xfccQNfpRJf',
+      placeholder: '雁过留声 人过留言',
+      avatar: 'monsterid',
+      meta: 'nick,mail,link'.split(','),
+      pageSize: '10',
+      lang: 'zh-CN',
+      recordIP: false,
+      serverURLs: '',
+      emojiCDN: '',
+      emojiMaps: "",
+      enableQQ: true,
+      path: window.location.pathname,
+    }
+
+    if (true) { 
+      initData.requiredFields= ('nick,mail'.split(','))
+    }
+    
+    if (false) {
+      const otherData = false
+      initData = Object.assign(initData, otherData)
+    }
+    
+    const valine = new Valine(initData)
+  }
+
+  if (typeof Valine === 'function') initValine() 
+  else getScript('https://cdn.jsdelivr.net/npm/valine/dist/Valine.min.js').then(initValine)
+}
+
+if ('Valine' === 'Valine' || !false) {
+  if (false) btf.loadComment(document.getElementById('vcomment'),loadValine)
+  else setTimeout(loadValine, 0)
+} else {
+  function loadOtherComment () {
+    loadValine()
+  }
+}</script></div><script>window.$crisp = [];
+window.CRISP_WEBSITE_ID = "4c74147c-a030-42ab-8f15-245c1806f59c";
+(function () {
+  d = document;
+  s = d.createElement("script");
+  s.src = "https://client.crisp.chat/l.js";
+  s.async = 1;
+  d.getElementsByTagName("head")[0].appendChild(s);
+})();
+$crisp.push(["safe", true])
+
+if (true) {
+  $crisp.push(["do", "chat:hide"])
+  $crisp.push(["on", "chat:closed", function() {
+    $crisp.push(["do", "chat:hide"])
+  }])
+  var chatBtnFn = () => {
+    var chatBtn = document.getElementById("chat_btn")
+    chatBtn.addEventListener("click", function(){
+      $crisp.push(["do", "chat:show"])
+      $crisp.push(["do", "chat:open"])
+
+    });
+  }
+  chatBtnFn()
+} else {
+  if (false) {
+    function chatBtnHide () {
+      $crisp.push(["do", "chat:hide"])
+    }
+    function chatBtnShow () {
+      $crisp.push(["do", "chat:show"])
+    }
+  }
+}</script><script src="https://cdn.jsdelivr.net/npm/pjax/pjax.min.js"></script><script>let pjaxSelectors = [
+  'title',
+  '#config-diff',
+  '#body-wrap',
+  '#rightside-config-hide',
+  '#rightside-config-show',
+  '.js-pjax'
+]
+
+if (false) {
+  pjaxSelectors.unshift('meta[property="og:image"]', 'meta[property="og:title"]', 'meta[property="og:url"]')
+}
+
+var pjax = new Pjax({
+  elements: 'a:not([target="_blank"])',
+  selectors: pjaxSelectors,
+  cacheBust: false,
+  analytics: false,
+  scrollRestoration: false
+})
+
+document.addEventListener('pjax:complete', function () {
+  window.refreshFn()
+
+  document.querySelectorAll('script[data-pjax]').forEach(item => {
+    const newScript = document.createElement('script')
+    const content = item.text || item.textContent || item.innerHTML || ""
+    Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+    newScript.appendChild(document.createTextNode(content))
+    item.parentNode.replaceChild(newScript, item)
+  })
+
+  GLOBAL_CONFIG.islazyload && window.lazyLoadInstance.update()
+
+  typeof chatBtnFn === 'function' && chatBtnFn()
+  typeof panguInit === 'function' && panguInit()
+
+  if (typeof gtag === 'function') {
+    gtag('config', '', {'page_path': window.location.pathname});
+  }
+
+  typeof loadMeting === 'function' && document.getElementsByClassName('aplayer').length && loadMeting()
+
+  // Analytics
+  if (false) {
+    MtaH5.pgv()
+  }
+
+  // prismjs
+  typeof Prism === 'object' && Prism.highlightAll()
+
+  typeof preloader === 'object' && preloader.endLoading()
+})
+
+
+document.addEventListener('pjax:send', function () {
+  typeof preloader === 'object' && preloader.initLoading()
+  
+  if (window.aplayers) {
+    for (let i = 0; i < window.aplayers.length; i++) {
+      if (!window.aplayers[i].options.fixed) {
+        window.aplayers[i].destroy()
+      }
+    }
+  }
+
+  typeof typed === 'object' && typed.destroy()
+
+  //reset readmode
+  const $bodyClassList = document.body.classList
+  $bodyClassList.contains('read-mode') && $bodyClassList.remove('read-mode')
+
+})
+
+document.addEventListener('pjax:error', (e) => {
+  if (e.request.status === 404) {
+    pjax.loadUrl('/404.html')
+  }
+})</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div><!-- hexo-inject:begin --><!-- hexo-inject:end --></body></html>

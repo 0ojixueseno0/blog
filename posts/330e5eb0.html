@@ -1,0 +1,673 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>使用Winhex进行数据恢复（12） | Hello! I'm 0o酱</title><meta name="keywords" content="Winhex,数据恢复,exFAT,文件系统"><meta name="author" content=" 0o酱"><meta name="copyright" content=" 0o酱"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="知识点总览：1. exFAT 分区 FAT 表结构2. exFAT 分区 Bitmap 结构3. exFAT 分区大写字符文件结构4. exFAT 分区目录结构">
+<!-- hexo-inject:begin --><!-- hexo-inject:end --><meta property="og:type" content="article">
+<meta property="og:title" content="使用Winhex进行数据恢复（12）">
+<meta property="og:url" content="https://blog.im0o.top/posts/330e5eb0.html">
+<meta property="og:site_name" content="Hello! I&#39;m 0o酱">
+<meta property="og:description" content="知识点总览：1. exFAT 分区 FAT 表结构2. exFAT 分区 Bitmap 结构3. exFAT 分区大写字符文件结构4. exFAT 分区目录结构">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://image.im0o.top/gitee/img/202112201801290.png">
+<meta property="article:published_time" content="2021-12-17T01:32:49.000Z">
+<meta property="article:modified_time" content="2022-05-24T06:19:06.174Z">
+<meta property="article:author" content=" 0o酱">
+<meta property="article:tag" content="Winhex">
+<meta property="article:tag" content="数据恢复">
+<meta property="article:tag" content="exFAT">
+<meta property="article:tag" content="文件系统">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://image.im0o.top/gitee/img/202112201801290.png"><link rel="shortcut icon" href="https://image.im0o.top/files/202112021204213.jpg"><link rel="canonical" href="https://blog.im0o.top/posts/330e5eb0"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><script async="async" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script><script>(adsbygoogle = window.adsbygoogle || []).push({
+  google_ad_client: 'ca-pub-3350696623728919',
+  enable_page_level_ads: 'true'
+});</script><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"search.xml","languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: {"defaultEncoding":2,"translateDelay":0,"msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"簡"},
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    jQuery: 'https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js',
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/js/jquery.justifiedGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/css/justifiedGallery.min.css'
+    },
+    fancybox: {
+      js: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isanchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = { 
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2022-05-24 14:19:06'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    })(window)</script><link rel="stylesheet" href="/css/custom.css"><meta name="generator" content="Hexo 5.4.0"><link rel="alternate" href="/atom.xml" title="Hello! I'm 0o酱" type="application/atom+xml"><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+</head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="author-avatar"><img class="avatar-img" src="https://image.im0o.top/files/202112021204213.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data"><div class="data-item is-center"><div class="data-item-link"><a href="/archives/"><div class="headline">文章</div><div class="length-num">37</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/tags/"><div class="headline">标签</div><div class="length-num">52</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/categories/"><div class="headline">分类</div><div class="length-num">6</div></a></div></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" target="_blank" rel="noopener" href="https://im0o.top"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fab fa-blogger-b"></i><span> 博客</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时光机</span></a></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> 索引</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page" href="/categories/%E6%97%A5%E8%AE%B0/"><i class="fa-fw fas fa-book"></i><span> 日记</span></a></li><li><a class="site-page" href="/photos/"><i class="fa-fw fas fa-images"></i><span> 照片</span></a></li><li><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></li><li><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://image.im0o.top/gitee/img/202112201750840.png')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">Hello! I'm 0o酱</a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" target="_blank" rel="noopener" href="https://im0o.top"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fab fa-blogger-b"></i><span> 博客</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时光机</span></a></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> 索引</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page" href="/categories/%E6%97%A5%E8%AE%B0/"><i class="fa-fw fas fa-book"></i><span> 日记</span></a></li><li><a class="site-page" href="/photos/"><i class="fa-fw fas fa-images"></i><span> 照片</span></a></li><li><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></li><li><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">使用Winhex进行数据恢复（12）</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2021-12-17T01:32:49.000Z" title="发表于 2021-12-17 09:32:49">2021-12-17</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2022-05-24T06:19:06.174Z" title="更新于 2022-05-24 14:19:06">2022-05-24</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/Winhex%E6%95%B0%E6%8D%AE%E6%81%A2%E5%A4%8D%E6%95%99%E7%A8%8B/">Winhex数据恢复教程</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>本节将学习到 exFAT 文件系统的 FAT 表、簇位图、目录结构。</p>
+<!-- hexo-inject:begin --><!-- hexo-inject:end --><h1 id="知识点总览"><a href="#知识点总览" class="headerlink" title="知识点总览"></a>知识点总览</h1><ul>
+<li>exFAT 分区 FAT 表结构</li>
+<li>exFAT 分区 Bitmap 结构</li>
+<li>exFAT 分区大写字符文件结构</li>
+<li>exFAT 分区目录结构</li>
+</ul>
+<h1 id="exFAT-分区-FAT-表结构"><a href="#exFAT-分区-FAT-表结构" class="headerlink" title="exFAT 分区 FAT 表结构"></a>exFAT 分区 FAT 表结构</h1><p>FAT（File Allocation Table）即文件分配表，对于ExFAT文件系统来讲也是很重要的一个组成部分，ExFAT文件系统FAT表的功能主要是记录不连续存储的文件的簇链，所以在FAT中看到数值为0的FAT项，并不能说明该FAT项对应的簇是可用簇。</p>
+<h2 id="系统是如何定位到-FAT-表的？"><a href="#系统是如何定位到-FAT-表的？" class="headerlink" title="系统是如何定位到 FAT 表的？"></a>系统是如何定位到 FAT 表的？</h2><p>① 从 MBR 的分区表定位到该分区的 DBR 扇区。</p>
+<p>② 读取 DBR 的 BPB 参数，主要读取 “ FAT 表起始扇区号” 这个参数，它在 DBR 的 50H~54H 偏移处。</p>
+<p>③ 读取到 “FAT 表起始扇区号” 这个参数的值后，跳转到该分区的偏移扇区，这里就是 FAT 表的开始。</p>
+<h2 id="FAT-表的实际应用"><a href="#FAT-表的实际应用" class="headerlink" title="FAT 表的实际应用"></a>FAT 表的实际应用</h2><p>把分区格式化为 exFAT 文件系统时，格式化程序会把分配给 FAT 表的第一个扇区清零，然后写入 0 号 FAT 项和 1 号 FAT 项，另外还会写入簇位图文件、大写字符文件及根目录所占簇对应的 FAT 项。</p>
+<p><img src="https://image.im0o.top/files/202112200947684.jpeg" alt="ExFAT文件系统的FAT表分析"></p>
+<p>由上图可以看出每个 FAT 项占用 4 字节：其中 0 号 FAT 项描述介质类型，其首字节为“F8”，表示介质类型为硬盘；1 号FAT项写入 4 个“FF”；从 2 号 FAT 项开始对应 2 号簇，3 号FAT项对应3号簇，一直到最后一个簇。目前 2、3、4 三个 FAT 项中都是结束标志，说明簇位图文件、大写字符文件、根目录各占一个簇。</p>
+<blockquote>
+<p>除了这5个FAT项以外，其他FAT项都是0，但这并不能说这些FAT项对应的簇就是空簇。</p>
+</blockquote>
+<h1 id="exFAT-分区-Bitmap-结构"><a href="#exFAT-分区-Bitmap-结构" class="headerlink" title="exFAT 分区 Bitmap 结构"></a>exFAT 分区 Bitmap 结构</h1><p>ExFAT 文件系统的 FAT 表之后就是数据区了，但数据区并不一定紧跟在 FAT 表之后，FAT 表后面可能还会有一些<strong>保留扇区</strong>，每个分区不一样，这要看实际情况。所以<strong>不能通过 Bitmap 的位置减去 FAT 表的位置直接计算分区大小</strong>。数据区的开始位置在 DBR 的 BPB 中有描述，“首簇起始扇区号”起始就是数据区的开始。数据区中第一个簇就是 2 号簇，2 号簇一般都分配给簇位图文件使用。</p>
+<blockquote>
+<p>簇位图文件是在分区格式化时创建的，该文件不允许用户访问和修改。</p>
+</blockquote>
+<p><img src="https://image.im0o.top/files/202112200951733.jpeg" alt="ExFAT文件系统的簇位图文件分析"></p>
+<p>上图为一个 exFAT 分区的 Bitmap。</p>
+<p>该扇区中只有一个字节“07H”，这就是簇位图文件的内容。</p>
+<p>簇位图文件是ExFAT文件系统中的一个元文件，类似于NTFS文件系统中的元文件$BitMap，它的作用是用来<strong>管理分区中簇的使用情况</strong>。簇位图文件中的<strong>每一个位</strong>，映射到数据区中的<strong>每一个簇</strong>。如果某个簇分配给了文件，该簇在簇位图文件中对应的位就会被填入“1”，表示该簇已经占用；如果没用使用的空簇，它们在簇位图文件中对应的位就是“0”。</p>
+<h1 id="exFAT-分区大写字符文件结构"><a href="#exFAT-分区大写字符文件结构" class="headerlink" title="exFAT 分区大写字符文件结构"></a>exFAT 分区大写字符文件结构</h1><p>大写字符文件是 exFAT 文件系统中的第二个元文件，类似于NTFS文件系统中的元文件$UpCase。Unicode字母表中每一个字符在这个文件中都有一个对应的条目，用于比较、排序、计算Hash值等方面。</p>
+<blockquote>
+<p>大写字符文件是在分区格式化时创建的，该文件不允许用户访问和修改。</p>
+</blockquote>
+<p>簇位图文件结束后的下一个簇一般就分配给大写字符文件使用。</p>
+<p><strong>大写字符文件的大小固定为 5836 字节，约为 12 个扇区。</strong></p>
+<p>下图为一个大写字符文件的第一个扇区的前半部分。</p>
+<p><img src="https://image.im0o.top/files/202112200957633.jpeg" alt="ExFAT文件系统的大写字符文件分析"></p>
+<p>从图中可以看到其内容都是Unicode字母表中的字符，每一个字符占用两个字节。</p>
+<h1 id="exFAT-分区目录结构"><a href="#exFAT-分区目录结构" class="headerlink" title="exFAT 分区目录结构"></a>exFAT 分区目录结构</h1><p>目录项对于 exFAT 文件系统来讲是非常重要的组成部分，其主要作用及结构特点如下：</p>
+<p>① 分区中的每个文件和文件夹（也称为目录）都被分配多个大小为 <strong>32字节</strong> 的目录项，用以描述文件或文件夹的<strong>属性、大小、起始簇号和时间、日期等信息</strong>，当然还会把文件名或目录名也记录在目录项中。</p>
+<p>② 在 exFAT 文件系统中，目录也被视为特殊类型的文件，所以<strong>每个目录也与文件一样有目录项</strong>。</p>
+<p>③ 在 exFAT 文件系统下，分区根目录下的文件及文件夹的目录项存放在根目录区中，分区<strong>子目录下的文件及文件夹的目录项存放在数据区相应的簇中</strong>。</p>
+<p>④ exFAT文件系统目录项的第一个字节用来描述目录项的类型，剩下的31字节用来记录文件的相关信息。</p>
+<p>⑤ 根据目录项的作用和结构特点，可以把目录项分为四种类型：</p>
+<ul>
+<li>卷标目录项</li>
+<li>簇位图文件的目录项</li>
+<li>大写字符文件的目录项</li>
+<li>用户文件的目录项</li>
+</ul>
+<h2 id="卷标目录项"><a href="#卷标目录项" class="headerlink" title="卷标目录项"></a>卷标目录项</h2><p>卷标就是一个分区的名字，可以在格式化分区时创建，也可以随时修改。ExFAT文件系统把卷标当作文件，用文件目录项进行管理。系统为卷标建一个目录项，放在根目录区中。</p>
+<p>卷标的目录项占用32字节，其中第一个字节是特征值，用来描述类型。</p>
+<p>卷标目录项的特征值为“83H”，如果没有卷标或者将卷标删除，该特征值为“03H”。</p>
+<h3 id="没有卷标的目录项"><a href="#没有卷标的目录项" class="headerlink" title="没有卷标的目录项"></a>没有卷标的目录项</h3><p><img src="https://image.im0o.top/gitee/img/202112201635142.png" alt="image-20211220163515076"></p>
+<p>上图为一个没有卷标的 exFAT 类型分区，其特征值为“03H”，占用 32 字节。</p>
+<h3 id="有卷标的目录项"><a href="#有卷标的目录项" class="headerlink" title="有卷标的目录项"></a>有卷标的目录项</h3><p>接下来查看有卷标的目录项（M:）：</p>
+<p><img src="https://image.im0o.top/gitee/img/202112201642926.png" alt="image-20211220164218881"></p>
+<p><img src="https://image.im0o.top/gitee/img/202112201642567.png" alt="image-20211220164201504"></p>
+<p>上图为一个有卷标的 exFAT 类型分区，其特征值为“83H”，紧接着标识符后的即为卷标名，共占用 32 字节。</p>
+<p>卷标的长度理论上为11字符，但实际上可以达到15字符。</p>
+<h3 id="被修改过卷标的目录项"><a href="#被修改过卷标的目录项" class="headerlink" title="被修改过卷标的目录项"></a>被修改过卷标的目录项</h3><p>将上图 “M:” 分区的卷标改为 <code>expart</code> 后从底层查看该属性。</p>
+<p><img src="https://image.im0o.top/gitee/img/202112201646962.png" alt="image-20211220164640907"></p>
+<p>由上图可以看出，该分区根目录的第一个目录项 “83H” 的内容被修改了。</p>
+<p>接下来查看将 “没有卷标的目录项” 改为 “有卷标的目录项”：</p>
+<p>将 “N:” 分区的卷标改为 <code>newpart</code> 后从底层查看该属性。</p>
+<p><img src="https://image.im0o.top/gitee/img/202112201648084.png" alt="image-20211220164824037"></p>
+<p>从根目录可以看出，该分区的第一个目录项还是 “03H”。</p>
+<p><img src="https://image.im0o.top/gitee/img/202112201649078.png" alt="image-20211220164906019"></p>
+<p>但是在最后一个目录项（改完卷标后没有做任何文件操作）中可以看到一条特征值为 “83H” 的目录项。</p>
+<p><img src="https://image.im0o.top/gitee/img/202112201649725.png" alt="image-20211220164946680"></p>
+<p>该目录项为刚刚修改的 <code>newpart</code>，再次修改卷标后，只有该目录项变更值。</p>
+<h2 id="簇位图文件的目录项"><a href="#簇位图文件的目录项" class="headerlink" title="簇位图文件的目录项"></a>簇位图文件的目录项</h2><p>ExFAT文件系统格式化时会创建一个簇位图文件，并为其建一个目录项，放在根目录区中。</p>
+<p>簇位图文件的目录项占用32字节，其中第一个字节是特征值，用来描述类型。簇位图文件目录项的特征值为“81H”。</p>
+<p>ExFAT簇位图文件目录项的含义：</p>
+<table>
+<thead>
+<tr>
+<th>字节偏移</th>
+<th>字段长度（字节）</th>
+<th>内容及含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>0x00</td>
+<td>1</td>
+<td>目录项的类型（簇位图文件目录项的特征值为“81H”）</td>
+</tr>
+<tr>
+<td>0x01</td>
+<td>1</td>
+<td>保留</td>
+</tr>
+<tr>
+<td>0x02</td>
+<td>18</td>
+<td>保留</td>
+</tr>
+<tr>
+<td>0x14</td>
+<td>4</td>
+<td>起始簇号</td>
+</tr>
+<tr>
+<td>0x18</td>
+<td>8</td>
+<td>文件大小</td>
+</tr>
+</tbody></table>
+<p>簇位图文件的目录项有如下特点：</p>
+<p>①对于ExFAT格式的分区，簇位图文件起始簇号一般都为2。</p>
+<p>②簇位图文件的目录项中不记录时间戳。</p>
+<p>下图为一个示例分区的簇位图目录项：</p>
+<p><img src="https://image.im0o.top/gitee/img/202112201659290.png" alt="image-20211220165914241"></p>
+<p>从上图可以看出，该分区的簇位图的起始簇号为：00 00 00 02 H</p>
+<p>簇位图的大小为：00 00 D0 12 H (53,266 字节)</p>
+<p>故该分区 BPB 参数中的 “分区总簇数” 为 (53266 - 1) * 8 ≈ 426,120</p>
+<blockquote>
+<p>由于最后一个字节不一定完整表示 8 个簇，为避免误差，则将字节数 - 1，算出来的结果与原总簇号最多误差 8 个簇。</p>
+</blockquote>
+<h2 id="大写字符文件的目录项"><a href="#大写字符文件的目录项" class="headerlink" title="大写字符文件的目录项"></a>大写字符文件的目录项</h2><p>ExFAT文件系统格式化时会创建一个大写字符文件文件，并为其建一个目录项，放在根目录区中。</p>
+<p>大写字符文件的目录项占用32字节，其中第一个字节是特征值，用来描述类型。大写字符文件目录项的特征值为“82H”。</p>
+<p>ExFAT大写字符文件目录项的含义：</p>
+<table>
+<thead>
+<tr>
+<th>字节偏移</th>
+<th>字段长度（字节）</th>
+<th>内容及含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>0x00</td>
+<td>1</td>
+<td>目录项的类型（大写字符文件目录项的特征值为“82H”）</td>
+</tr>
+<tr>
+<td>0x01</td>
+<td>3</td>
+<td>保留</td>
+</tr>
+<tr>
+<td>0x08</td>
+<td>14</td>
+<td>保留</td>
+</tr>
+<tr>
+<td>0x14</td>
+<td>4</td>
+<td>起始簇号</td>
+</tr>
+<tr>
+<td>0x18</td>
+<td>8</td>
+<td>文件大小</td>
+</tr>
+</tbody></table>
+<p>大写字符文件的目录项有如下特点：</p>
+<p>①对于ExFAT格式的分区，大写字符文件的目录项一般都跟在簇位图文件的目录项之后。</p>
+<p>②大写字符文件的目录项中不记录时间戳。</p>
+<p>下图为一个示例分区的大写字符文件目录项：</p>
+<p><img src="https://image.im0o.top/gitee/img/202112201720109.png" alt="image-20211220172019066"></p>
+<p>从上图可以看出，该分区的大写字符文件的起始簇号为：00 00 00 04 H</p>
+<p>大写字符文件的大小为：00 00 16 CC H (5,836 字节)</p>
+<p>跳转到大写字符文件数据区（4号簇）后查看其扇区位置：</p>
+<p><img src="https://image.im0o.top/gitee/img/202112201724416.png" alt="image-20211220172400321"></p>
+<p><strong>大写字符的位置为 6,335 号扇区</strong></p>
+<p>根目录的数据区在大写字符后一个簇（即5号簇），向下跳转 5836 字节后搜索 <code>!00</code> 到达根目录：</p>
+<p><img src="https://image.im0o.top/gitee/img/202112201727337.png" alt="image-20211220172727237"></p>
+<p><strong>根目录的位置为 6,399 扇区。</strong></p>
+<p>用根目录的位置（5号簇）减去大写字符文件位置（4号簇）可得每簇扇区数为：6399 - 6335 = 64 。</p>
+<h2 id="用户文件的目录项"><a href="#用户文件的目录项" class="headerlink" title="用户文件的目录项"></a>用户文件的目录项</h2><p>ExFAT文件系统中每个用户文件至少有三个目录项，这三个目录项被称为三个属性：第一个目录项称为“属性1”，目录项首字节的特征值为“85H”；第二个目录项称为“属性2”，目录项首字节的特征值为“C0H”；第三个目录项称为“属性3”，目录项首字节的特征值为“C1H”。</p>
+<h3 id="“属性1”目录项"><a href="#“属性1”目录项" class="headerlink" title="“属性1”目录项"></a>“属性1”目录项</h3><p>“属性1”目录项用来记录该目录项的附属目录项数、校验和、文件属性、时间戳等信息。</p>
+<p>用户文件的“属性1”目录项如图所示。</p>
+<p><img src="https://image.im0o.top/gitee/img/202112201750840.png" alt="image-20211220175047782"></p>
+<p>用户文件的“属性1”目录项的含义</p>
+<table>
+<thead>
+<tr>
+<th>字节偏移</th>
+<th>字段长度（字节）</th>
+<th>内容及含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>0x00</td>
+<td>1</td>
+<td>目录项的类型（“属性1”目录项的特征值为“85H”）</td>
+</tr>
+<tr>
+<td>0x01</td>
+<td>1</td>
+<td>附属目录项数</td>
+</tr>
+<tr>
+<td>0x02</td>
+<td>2</td>
+<td>校验和</td>
+</tr>
+<tr>
+<td>0x04</td>
+<td>4</td>
+<td>文件属性</td>
+</tr>
+<tr>
+<td>0x08</td>
+<td>4</td>
+<td>文件创建时间</td>
+</tr>
+<tr>
+<td>0x0C</td>
+<td>4</td>
+<td>文件最后修改时间</td>
+</tr>
+<tr>
+<td>0x10</td>
+<td>4</td>
+<td>文件最后访问时间</td>
+</tr>
+<tr>
+<td>0x14</td>
+<td>1</td>
+<td>文件创建时间精确至10ms</td>
+</tr>
+<tr>
+<td>0x15</td>
+<td>3</td>
+<td>保留</td>
+</tr>
+<tr>
+<td>0x18</td>
+<td>8</td>
+<td>保留</td>
+</tr>
+</tbody></table>
+<p>①0x00～0x00：类型。该参数为目录项类型的特征值，“属性1”目录项的特征值为“85H”。</p>
+<p>②0x01～0x01：附属目录项数。该参数指除此目录项外，该文件还有几个目录项，当前值为2，说明这个文件除了“属性1”目录项外，后面还有两个目录项，起始就是“属性2”目录项和“属性3”目录项。</p>
+<p>③0x02～0x03：校验和。该参数是校验算法算出来的目录项的校验和。</p>
+<p>④0x04～0x07：文件属性。该参数描述文件的常规属性，属性具体含义见下表。</p>
+<table>
+<thead>
+<tr>
+<th>二进制值</th>
+<th>属性含义</th>
+<th>二进制值</th>
+<th>属性含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>00000000</td>
+<td>读/写</td>
+<td>00001000</td>
+<td>卷标</td>
+</tr>
+<tr>
+<td>00000001</td>
+<td>只读</td>
+<td>00010000</td>
+<td>子目录</td>
+</tr>
+<tr>
+<td>00000010</td>
+<td>隐藏</td>
+<td>00100000</td>
+<td>存档</td>
+</tr>
+<tr>
+<td>00000100</td>
+<td>系统</td>
+<td></td>
+<td></td>
+</tr>
+</tbody></table>
+<p>⑤0x08～0x0B：文件创建时间。该参数是文件的具体创建时间，格式为32位的DOS时间，包括年、月、日、时、分、秒，具体表示方法与FAT文件系统一样，这里就不再重复讲述。</p>
+<p>⑥0x0C～0x0F：文件最后修改时间。该参数是文件最后一次修改时的具体时间，格式为32位的DOS时间，包括年、月、日、时、分、秒，具体表示方法跟FAT文件系统一样，这里就不再重复讲述。</p>
+<p>⑦0x10～0x13：文件最后访问时间。该参数是文件最后一次访问时的具体时间，格式为32位的DOS时间，包括年、月、日，也包含时、分、秒，这一点跟FAT不一样，FAT中改时间只有年、月、日，没有时、分、秒。</p>
+<p>⑧0x14～0x14：文件创建时间，精确至10ms。该参数是文件的具体创建时间精确到10ms的数值。</p>
+<h3 id="“属性2”目录项"><a href="#“属性2”目录项" class="headerlink" title="“属性2”目录项"></a>“属性2”目录项</h3><p>“属性2”目录项用来记录文件是否有碎片、文件名的字符数、文件名的Hash值、文件的起始簇号及大小等信息。</p>
+<p>用户文件的“属性2”目录项如图所示。</p>
+<p><img src="https://image.im0o.top/gitee/img/202112201801290.png" alt="image-20211220180123226"></p>
+<p>用户文件的“属性2”目录项的含义</p>
+<table>
+<thead>
+<tr>
+<th>字节偏移</th>
+<th>字段长度（字节）</th>
+<th>内容及含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>0x00</td>
+<td>1</td>
+<td>目录项的类型（“属性2”目录项的特征值为“C0H”）</td>
+</tr>
+<tr>
+<td>0x01</td>
+<td>1</td>
+<td>文件碎片标志</td>
+</tr>
+<tr>
+<td>0x02</td>
+<td>1</td>
+<td>保留</td>
+</tr>
+<tr>
+<td>0x03</td>
+<td>1</td>
+<td>文件名字符数N</td>
+</tr>
+<tr>
+<td>0x04</td>
+<td>2</td>
+<td>文件名Hash值</td>
+</tr>
+<tr>
+<td>0x06</td>
+<td>2</td>
+<td>保留</td>
+</tr>
+<tr>
+<td>0x08</td>
+<td>8</td>
+<td>文件大小1</td>
+</tr>
+<tr>
+<td>0x10</td>
+<td>4</td>
+<td>保留</td>
+</tr>
+<tr>
+<td>0x14</td>
+<td>4</td>
+<td>起始簇号</td>
+</tr>
+<tr>
+<td>0x18</td>
+<td>8</td>
+<td>文件大小2</td>
+</tr>
+</tbody></table>
+<p>①0x00～0x00：类型。该参数为目录项类型的特征值，“属性2”目录项的特征值为“C0H”。</p>
+<p>②0x01～0x01：文件碎片标志。该参数能够反映出文件是否连续存放。如果是连续存放没有碎片，该标志为03H；如果不是连续存放，文件有碎片，该标志就为01H。</p>
+<p>③0x03～0x03：文件名字符数。该参数用来说明文件名的长度，ExFAT文件系统的文件名用Unicode码表示，每个字符占用两个字节。</p>
+<p>④0x04～0x05：文件名Hash值。该参数是根据相应算法算出的文件名的校验值，当文件名发生改变时，Hash值也会发生改变，但当文件移动时，该值并不改变。</p>
+<p>⑤0x08～0x0F：文件大小1。该参数是文件的总字节数，用64位记录文件大小。</p>
+<p>⑥0x14～0x17：起始簇号。该参数描述文件的起始簇号，用32位记录簇的地址。</p>
+<p>⑦0x18～0x1F：文件大小2。该参数也是文件的总字节数，是为NTFS文件系统的压缩属性准备的，一般情况下与“文件大小1”的数值保持一致。</p>
+<h3 id="“属性3”目录项"><a href="#“属性3”目录项" class="headerlink" title="“属性3”目录项"></a>“属性3”目录项</h3><p>“属性3”目录项用来具体记录文件的名称。如果文件名很长，“属性3”可以包含多个目录项，每个目录项称为一个片段，从上至下依次记录文件名的每一个字符，记录的方向刚好跟FAT文件系统中长文件名目录项从下至上的顺序相反。</p>
+<p><img src="https://image.im0o.top/gitee/img/202112201824374.png" alt="image-20211220182437323"></p>
+<p>用户文件的“属性3”目录项的含义</p>
+<table>
+<thead>
+<tr>
+<th>字节偏移</th>
+<th>字段长度（字节）</th>
+<th>内容及含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>0x00</td>
+<td>1</td>
+<td>目录项的类型（“属性3”目录项的特征值为“C1H”）</td>
+</tr>
+<tr>
+<td>0x01</td>
+<td>1</td>
+<td>保留</td>
+</tr>
+<tr>
+<td>0x02</td>
+<td>2N</td>
+<td>文件名</td>
+</tr>
+</tbody></table>
+<p>因为该文件名很短，所以只有一个片段，如果文件名足够长，则有多个“属性3”（C1H）。</p>
+<script type="text&#x2F;javascript" src="https://cdn.jsdelivr.net/npm/kity@2.0.4/dist/kity.min.js"></script><script type="text&#x2F;javascript" src="https://cdn.jsdelivr.net/npm/kityminder-core@1.4.50/dist/kityminder.core.min.js"></script><script defer="true" type="text&#x2F;javascript" src="https://cdn.jsdelivr.net/npm/hexo-simple-mindmap@0.7.0/dist/mindmap.min.js"></script><link rel="stylesheet" type="text&#x2F;css" href="https://cdn.jsdelivr.net/npm/hexo-simple-mindmap@0.7.0/dist/mindmap.min.css"></article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined"> 0o酱</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://blog.im0o.top/posts/330e5eb0.html">https://blog.im0o.top/posts/330e5eb0.html</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://blog.im0o.top" target="_blank">Hello! I'm 0o酱</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Winhex/">Winhex</a><a class="post-meta__tags" href="/tags/%E6%95%B0%E6%8D%AE%E6%81%A2%E5%A4%8D/">数据恢复</a><a class="post-meta__tags" href="/tags/exFAT/">exFAT</a><a class="post-meta__tags" href="/tags/%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F/">文件系统</a></div><div class="post_share"><div class="social-share" data-image="https://image.im0o.top/gitee/img/202112201801290.png" data-sites="twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><div class="post-reward"><div class="reward-button button--animated"><i class="fas fa-qrcode"></i> 打赏</div><div class="reward-main"><ul class="reward-all"><li class="reward-item"><a href="https://image.im0o.top/gitee/img/20210228084008.png" target="_blank"><img class="post-qr-code-img" src="https://image.im0o.top/gitee/img/20210228084008.png" alt="wechat"/></a><div class="post-qr-code-desc">wechat</div></li><li class="reward-item"><a href="https://image.im0o.top/gitee/img/20210228081408.jpg" target="_blank"><img class="post-qr-code-img" src="https://image.im0o.top/gitee/img/20210228081408.jpg" alt="alipay"/></a><div class="post-qr-code-desc">alipay</div></li></ul></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/posts/8bb239d5.html"><img class="prev-cover" src="https://image.im0o.top/gitee/img/202112211131493.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">使用Winhex进行数据恢复（13）</div></div></a></div><div class="next-post pull-right"><a href="/posts/76c8cbd5.html"><img class="next-cover" src="https://what2eat.im0o.top/static/what2eat.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">What2Eat - 吃点啥？</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span> 相关推荐</span></div><div class="relatedPosts-list"><div><a href="/posts/8bb239d5.html" title="使用Winhex进行数据恢复（13）"><img class="cover" src="https://image.im0o.top/gitee/img/202112211131493.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-12-20</div><div class="title">使用Winhex进行数据恢复（13）</div></div></a></div><div><a href="/posts/3dd75753.html" title="使用Winhex进行数据恢复（11）"><img class="cover" src="https://image.im0o.top/files/202112162024603.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-12-08</div><div class="title">使用Winhex进行数据恢复（11）</div></div></a></div><div><a href="/posts/1aa64c01.html" title="使用Winhex进行数据恢复（索引）"><img class="cover" src="https://image.im0o.top/files/202111211858933.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-11-21</div><div class="title">使用Winhex进行数据恢复（索引）</div></div></a></div><div><a href="/posts/85e961fa.html" title="使用Winhex进行数据恢复（9）"><img class="cover" src="https://image.im0o.top/files/202112070938368.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-12-03</div><div class="title">使用Winhex进行数据恢复（9）</div></div></a></div><div><a href="/posts/3d55069f.html" title="使用Winhex进行数据恢复（8）"><img class="cover" src="https://image.im0o.top/files/202112021051917.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-12-02</div><div class="title">使用Winhex进行数据恢复（8）</div></div></a></div><div><a href="/posts/653616c9.html" title="使用Winhex进行数据恢复（7）"><img class="cover" src="https://image.im0o.top/files/202111231058300.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-11-22</div><div class="title">使用Winhex进行数据恢复（7）</div></div></a></div></div></div><hr/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div class="vcomment" id="vcomment"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="card-info-avatar is-center"><img class="avatar-img" src="https://image.im0o.top/files/202112021204213.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/><div class="author-info__name"> 0o酱</div><div class="author-info__description"></div></div><div class="card-info-data"><div class="card-info-data-item is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">37</div></a></div><div class="card-info-data-item is-center"><a href="/tags/"><div class="headline">标签</div><div class="length-num">52</div></a></div><div class="card-info-data-item is-center"><a href="/categories/"><div class="headline">分类</div><div class="length-num">6</div></a></div></div><a class="button--animated" id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/0ojixueseno0"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="/atom.xml" target="_blank" title="RSS"><i class="fas fa-rss"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn card-announcement-animation"></i><span>公告</span></div><div class="announcement_content">“光阴如梦，昨日随风”<br />9.20 更新关于页面<br />11.15 迁移博客至 Vercel 服务<br />12.2 更新头像，感谢@验验！"</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-number">1.</span> <span class="toc-text">前言</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%9F%A5%E8%AF%86%E7%82%B9%E6%80%BB%E8%A7%88"><span class="toc-number">2.</span> <span class="toc-text">知识点总览</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#exFAT-%E5%88%86%E5%8C%BA-FAT-%E8%A1%A8%E7%BB%93%E6%9E%84"><span class="toc-number">3.</span> <span class="toc-text">exFAT 分区 FAT 表结构</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%B3%BB%E7%BB%9F%E6%98%AF%E5%A6%82%E4%BD%95%E5%AE%9A%E4%BD%8D%E5%88%B0-FAT-%E8%A1%A8%E7%9A%84%EF%BC%9F"><span class="toc-number">3.1.</span> <span class="toc-text">系统是如何定位到 FAT 表的？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#FAT-%E8%A1%A8%E7%9A%84%E5%AE%9E%E9%99%85%E5%BA%94%E7%94%A8"><span class="toc-number">3.2.</span> <span class="toc-text">FAT 表的实际应用</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#exFAT-%E5%88%86%E5%8C%BA-Bitmap-%E7%BB%93%E6%9E%84"><span class="toc-number">4.</span> <span class="toc-text">exFAT 分区 Bitmap 结构</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#exFAT-%E5%88%86%E5%8C%BA%E5%A4%A7%E5%86%99%E5%AD%97%E7%AC%A6%E6%96%87%E4%BB%B6%E7%BB%93%E6%9E%84"><span class="toc-number">5.</span> <span class="toc-text">exFAT 分区大写字符文件结构</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#exFAT-%E5%88%86%E5%8C%BA%E7%9B%AE%E5%BD%95%E7%BB%93%E6%9E%84"><span class="toc-number">6.</span> <span class="toc-text">exFAT 分区目录结构</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8D%B7%E6%A0%87%E7%9B%AE%E5%BD%95%E9%A1%B9"><span class="toc-number">6.1.</span> <span class="toc-text">卷标目录项</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B2%A1%E6%9C%89%E5%8D%B7%E6%A0%87%E7%9A%84%E7%9B%AE%E5%BD%95%E9%A1%B9"><span class="toc-number">6.1.1.</span> <span class="toc-text">没有卷标的目录项</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9C%89%E5%8D%B7%E6%A0%87%E7%9A%84%E7%9B%AE%E5%BD%95%E9%A1%B9"><span class="toc-number">6.1.2.</span> <span class="toc-text">有卷标的目录项</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%A2%AB%E4%BF%AE%E6%94%B9%E8%BF%87%E5%8D%B7%E6%A0%87%E7%9A%84%E7%9B%AE%E5%BD%95%E9%A1%B9"><span class="toc-number">6.1.3.</span> <span class="toc-text">被修改过卷标的目录项</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%B0%87%E4%BD%8D%E5%9B%BE%E6%96%87%E4%BB%B6%E7%9A%84%E7%9B%AE%E5%BD%95%E9%A1%B9"><span class="toc-number">6.2.</span> <span class="toc-text">簇位图文件的目录项</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A4%A7%E5%86%99%E5%AD%97%E7%AC%A6%E6%96%87%E4%BB%B6%E7%9A%84%E7%9B%AE%E5%BD%95%E9%A1%B9"><span class="toc-number">6.3.</span> <span class="toc-text">大写字符文件的目录项</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%94%A8%E6%88%B7%E6%96%87%E4%BB%B6%E7%9A%84%E7%9B%AE%E5%BD%95%E9%A1%B9"><span class="toc-number">6.4.</span> <span class="toc-text">用户文件的目录项</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E2%80%9C%E5%B1%9E%E6%80%A71%E2%80%9D%E7%9B%AE%E5%BD%95%E9%A1%B9"><span class="toc-number">6.4.1.</span> <span class="toc-text">“属性1”目录项</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E2%80%9C%E5%B1%9E%E6%80%A72%E2%80%9D%E7%9B%AE%E5%BD%95%E9%A1%B9"><span class="toc-number">6.4.2.</span> <span class="toc-text">“属性2”目录项</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E2%80%9C%E5%B1%9E%E6%80%A73%E2%80%9D%E7%9B%AE%E5%BD%95%E9%A1%B9"><span class="toc-number">6.4.3.</span> <span class="toc-text">“属性3”目录项</span></a></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/posts/3723ef87.html" title="2022年3月25日博客更新记录"><img src="https://image.im0o.top/files/202203251648463.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="2022年3月25日博客更新记录"/></a><div class="content"><a class="title" href="/posts/3723ef87.html" title="2022年3月25日博客更新记录">2022年3月25日博客更新记录</a><time datetime="2022-03-25T08:46:52.000Z" title="发表于 2022-03-25 16:46:52">2022-03-25</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/ad82a4d2.html" title="2021觅食记录"><img src="https://image.im0o.top/gitee/img/20220203183226.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="2021觅食记录"/></a><div class="content"><a class="title" href="/posts/ad82a4d2.html" title="2021觅食记录">2021觅食记录</a><time datetime="2022-02-02T01:52:28.000Z" title="发表于 2022-02-02 09:52:28">2022-02-02</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/faf55402.html" title="小记：拿到第二个国家奖学金"><img src="https://image.im0o.top/gitee/img/20220123051429.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="小记：拿到第二个国家奖学金"/></a><div class="content"><a class="title" href="/posts/faf55402.html" title="小记：拿到第二个国家奖学金">小记：拿到第二个国家奖学金</a><time datetime="2022-01-22T20:33:52.000Z" title="发表于 2022-01-23 04:33:52">2022-01-23</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/8bb239d5.html" title="使用Winhex进行数据恢复（13）"><img src="https://image.im0o.top/gitee/img/202112211131493.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="使用Winhex进行数据恢复（13）"/></a><div class="content"><a class="title" href="/posts/8bb239d5.html" title="使用Winhex进行数据恢复（13）">使用Winhex进行数据恢复（13）</a><time datetime="2021-12-20T10:34:50.000Z" title="发表于 2021-12-20 18:34:50">2021-12-20</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/330e5eb0.html" title="使用Winhex进行数据恢复（12）"><img src="https://image.im0o.top/gitee/img/202112201801290.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="使用Winhex进行数据恢复（12）"/></a><div class="content"><a class="title" href="/posts/330e5eb0.html" title="使用Winhex进行数据恢复（12）">使用Winhex进行数据恢复（12）</a><time datetime="2021-12-17T01:32:49.000Z" title="发表于 2021-12-17 09:32:49">2021-12-17</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2022 By  0o酱</div><div class="framework-info"></div><div class="footer_custom_text"><a href="https://icp.gov.moe/?keyword=20210216" target="_blank">萌ICP备20210216号</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="translateLink" type="button" title="简繁转换">繁</button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="chat_btn" type="button" title="rightside.chat_btn"><i class="fas fa-sms"></i></button><a id="to_comment" href="#post-comment" title="直达评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div id="local-search"><div class="search-dialog"><div class="search-dialog__title" id="local-search-title">本地搜索</div><div id="local-input-panel"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div></div><hr/><div id="local-search-results"></div><span class="search-close-button"><i class="fas fa-times"></i></span></div><div id="search-mask"></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="/js/tw_cn.js"></script><script src="/js/search/local-search.js"></script><div class="js-pjax"><script>function loadValine () {
+  function initValine () {
+    let initData = {
+      el: '#vcomment',
+      appId: 'tnbYrgjBNXyv9CGieakQl5Uw-gzGzoHsz',
+      appKey: 'yej0JecfeXMR9xfccQNfpRJf',
+      placeholder: '雁过留声 人过留言',
+      avatar: 'monsterid',
+      meta: 'nick,mail,link'.split(','),
+      pageSize: '10',
+      lang: 'zh-CN',
+      recordIP: false,
+      serverURLs: '',
+      emojiCDN: '',
+      emojiMaps: "",
+      enableQQ: true,
+      path: window.location.pathname,
+    }
+
+    if (true) { 
+      initData.requiredFields= ('nick,mail'.split(','))
+    }
+    
+    if (false) {
+      const otherData = false
+      initData = Object.assign(initData, otherData)
+    }
+    
+    const valine = new Valine(initData)
+  }
+
+  if (typeof Valine === 'function') initValine() 
+  else getScript('https://cdn.jsdelivr.net/npm/valine/dist/Valine.min.js').then(initValine)
+}
+
+if ('Valine' === 'Valine' || !false) {
+  if (false) btf.loadComment(document.getElementById('vcomment'),loadValine)
+  else setTimeout(loadValine, 0)
+} else {
+  function loadOtherComment () {
+    loadValine()
+  }
+}</script></div><script>window.$crisp = [];
+window.CRISP_WEBSITE_ID = "4c74147c-a030-42ab-8f15-245c1806f59c";
+(function () {
+  d = document;
+  s = d.createElement("script");
+  s.src = "https://client.crisp.chat/l.js";
+  s.async = 1;
+  d.getElementsByTagName("head")[0].appendChild(s);
+})();
+$crisp.push(["safe", true])
+
+if (true) {
+  $crisp.push(["do", "chat:hide"])
+  $crisp.push(["on", "chat:closed", function() {
+    $crisp.push(["do", "chat:hide"])
+  }])
+  var chatBtnFn = () => {
+    var chatBtn = document.getElementById("chat_btn")
+    chatBtn.addEventListener("click", function(){
+      $crisp.push(["do", "chat:show"])
+      $crisp.push(["do", "chat:open"])
+
+    });
+  }
+  chatBtnFn()
+} else {
+  if (false) {
+    function chatBtnHide () {
+      $crisp.push(["do", "chat:hide"])
+    }
+    function chatBtnShow () {
+      $crisp.push(["do", "chat:show"])
+    }
+  }
+}</script><script src="https://cdn.jsdelivr.net/npm/pjax/pjax.min.js"></script><script>let pjaxSelectors = [
+  'title',
+  '#config-diff',
+  '#body-wrap',
+  '#rightside-config-hide',
+  '#rightside-config-show',
+  '.js-pjax'
+]
+
+if (false) {
+  pjaxSelectors.unshift('meta[property="og:image"]', 'meta[property="og:title"]', 'meta[property="og:url"]')
+}
+
+var pjax = new Pjax({
+  elements: 'a:not([target="_blank"])',
+  selectors: pjaxSelectors,
+  cacheBust: false,
+  analytics: false,
+  scrollRestoration: false
+})
+
+document.addEventListener('pjax:complete', function () {
+  window.refreshFn()
+
+  document.querySelectorAll('script[data-pjax]').forEach(item => {
+    const newScript = document.createElement('script')
+    const content = item.text || item.textContent || item.innerHTML || ""
+    Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+    newScript.appendChild(document.createTextNode(content))
+    item.parentNode.replaceChild(newScript, item)
+  })
+
+  GLOBAL_CONFIG.islazyload && window.lazyLoadInstance.update()
+
+  typeof chatBtnFn === 'function' && chatBtnFn()
+  typeof panguInit === 'function' && panguInit()
+
+  if (typeof gtag === 'function') {
+    gtag('config', '', {'page_path': window.location.pathname});
+  }
+
+  typeof loadMeting === 'function' && document.getElementsByClassName('aplayer').length && loadMeting()
+
+  // Analytics
+  if (false) {
+    MtaH5.pgv()
+  }
+
+  // prismjs
+  typeof Prism === 'object' && Prism.highlightAll()
+
+  typeof preloader === 'object' && preloader.endLoading()
+})
+
+
+document.addEventListener('pjax:send', function () {
+  typeof preloader === 'object' && preloader.initLoading()
+  
+  if (window.aplayers) {
+    for (let i = 0; i < window.aplayers.length; i++) {
+      if (!window.aplayers[i].options.fixed) {
+        window.aplayers[i].destroy()
+      }
+    }
+  }
+
+  typeof typed === 'object' && typed.destroy()
+
+  //reset readmode
+  const $bodyClassList = document.body.classList
+  $bodyClassList.contains('read-mode') && $bodyClassList.remove('read-mode')
+
+})
+
+document.addEventListener('pjax:error', (e) => {
+  if (e.request.status === 404) {
+    pjax.loadUrl('/404.html')
+  }
+})</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div><!-- hexo-inject:begin --><!-- hexo-inject:end --></body></html>

@@ -1,0 +1,471 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>Hello! I&#39;m 0o酱</title>
+  <icon>https://blog.im0o.top/img/avater.png</icon>
+  <subtitle>Our world is worth fighting for.</subtitle>
+  <link href="https://blog.im0o.top/atom.xml" rel="self"/>
+  
+  <link href="https://blog.im0o.top/"/>
+  <updated>2022-05-24T06:19:06.197Z</updated>
+  <id>https://blog.im0o.top/</id>
+  
+  <author>
+    <name> 0o酱</name>
+    
+  </author>
+  
+  <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>2022年3月25日博客更新记录</title>
+    <link href="https://blog.im0o.top/posts/3723ef87.html"/>
+    <id>https://blog.im0o.top/posts/3723ef87.html</id>
+    <published>2022-03-25T08:46:52.000Z</published>
+    <updated>2022-05-24T06:19:06.197Z</updated>
+    
+    
+    <summary type="html">博客更新记录：更换图床、添加搜索、优化索引</summary>
+    
+    
+    
+    <category term="杂谈/踩坑笔记" scheme="https://blog.im0o.top/categories/%E6%9D%82%E8%B0%88-%E8%B8%A9%E5%9D%91%E7%AC%94%E8%AE%B0/"/>
+    
+    
+    <category term="hexo" scheme="https://blog.im0o.top/tags/hexo/"/>
+    
+    <category term="优化博客" scheme="https://blog.im0o.top/tags/%E4%BC%98%E5%8C%96%E5%8D%9A%E5%AE%A2/"/>
+    
+    <category term="更新记录" scheme="https://blog.im0o.top/tags/%E6%9B%B4%E6%96%B0%E8%AE%B0%E5%BD%95/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>2021觅食记录</title>
+    <link href="https://blog.im0o.top/posts/ad82a4d2.html"/>
+    <id>https://blog.im0o.top/posts/ad82a4d2.html</id>
+    <published>2022-02-02T01:52:28.000Z</published>
+    <updated>2022-05-24T06:19:06.200Z</updated>
+    
+    
+    <summary type="html">收录了我 2021 年以来吃过的大多数好吃的（有照片的）&lt;br/&gt;内含多图，建议在Wifi网络下打开哦~</summary>
+    
+    
+    
+    <category term="日记" scheme="https://blog.im0o.top/categories/%E6%97%A5%E8%AE%B0/"/>
+    
+    
+    <category term="年度总结" scheme="https://blog.im0o.top/tags/%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/"/>
+    
+    <category term="好吃的" scheme="https://blog.im0o.top/tags/%E5%A5%BD%E5%90%83%E7%9A%84/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>小记：拿到第二个国家奖学金</title>
+    <link href="https://blog.im0o.top/posts/faf55402.html"/>
+    <id>https://blog.im0o.top/posts/faf55402.html</id>
+    <published>2022-01-22T20:33:52.000Z</published>
+    <updated>2022-05-24T06:19:06.147Z</updated>
+    
+    
+    <summary type="html">获得成就：连续拿两年国家奖学金</summary>
+    
+    
+    
+    <category term="日记" scheme="https://blog.im0o.top/categories/%E6%97%A5%E8%AE%B0/"/>
+    
+    
+    <category term="奖状" scheme="https://blog.im0o.top/tags/%E5%A5%96%E7%8A%B6/"/>
+    
+    <category term="奖学金" scheme="https://blog.im0o.top/tags/%E5%A5%96%E5%AD%A6%E9%87%91/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>使用Winhex进行数据恢复（13）</title>
+    <link href="https://blog.im0o.top/posts/8bb239d5.html"/>
+    <id>https://blog.im0o.top/posts/8bb239d5.html</id>
+    <published>2021-12-20T10:34:50.000Z</published>
+    <updated>2022-05-24T06:19:06.173Z</updated>
+    
+    
+    <summary type="html">本节有两道实例题目：&lt;br/&gt;恢复丢失 DBR 的 exFAT 分区&lt;br/&gt;从 exFAT 分区中提取文件</summary>
+    
+    
+    
+    <category term="Winhex数据恢复教程" scheme="https://blog.im0o.top/categories/Winhex%E6%95%B0%E6%8D%AE%E6%81%A2%E5%A4%8D%E6%95%99%E7%A8%8B/"/>
+    
+    
+    <category term="Winhex" scheme="https://blog.im0o.top/tags/Winhex/"/>
+    
+    <category term="数据恢复" scheme="https://blog.im0o.top/tags/%E6%95%B0%E6%8D%AE%E6%81%A2%E5%A4%8D/"/>
+    
+    <category term="exFAT" scheme="https://blog.im0o.top/tags/exFAT/"/>
+    
+    <category term="文件系统" scheme="https://blog.im0o.top/tags/%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>使用Winhex进行数据恢复（12）</title>
+    <link href="https://blog.im0o.top/posts/330e5eb0.html"/>
+    <id>https://blog.im0o.top/posts/330e5eb0.html</id>
+    <published>2021-12-17T01:32:49.000Z</published>
+    <updated>2022-05-24T06:19:06.174Z</updated>
+    
+    
+    <summary type="html">知识点总览：1. exFAT 分区 FAT 表结构&lt;br&gt;2. exFAT 分区 Bitmap 结构&lt;br&gt;3. exFAT 分区大写字符文件结构&lt;br&gt;4. exFAT 分区目录结构</summary>
+    
+    
+    
+    <category term="Winhex数据恢复教程" scheme="https://blog.im0o.top/categories/Winhex%E6%95%B0%E6%8D%AE%E6%81%A2%E5%A4%8D%E6%95%99%E7%A8%8B/"/>
+    
+    
+    <category term="Winhex" scheme="https://blog.im0o.top/tags/Winhex/"/>
+    
+    <category term="数据恢复" scheme="https://blog.im0o.top/tags/%E6%95%B0%E6%8D%AE%E6%81%A2%E5%A4%8D/"/>
+    
+    <category term="exFAT" scheme="https://blog.im0o.top/tags/exFAT/"/>
+    
+    <category term="文件系统" scheme="https://blog.im0o.top/tags/%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>What2Eat - 吃点啥？</title>
+    <link href="https://blog.im0o.top/posts/76c8cbd5.html"/>
+    <id>https://blog.im0o.top/posts/76c8cbd5.html</id>
+    <published>2021-12-16T01:52:21.000Z</published>
+    <updated>2022-05-24T06:19:06.180Z</updated>
+    
+    
+    <summary type="html">这是一个可以决定人类命运的神奇工具，当你在犹豫吃什么的时候，不妨使用 “吃点啥儿” 帮助你决定你接下来要吃什么吧！</summary>
+    
+    
+    
+    <category term="小玩意儿" scheme="https://blog.im0o.top/categories/%E5%B0%8F%E7%8E%A9%E6%84%8F%E5%84%BF/"/>
+    
+    
+    <category term="what2eat" scheme="https://blog.im0o.top/tags/what2eat/"/>
+    
+    <category term="html" scheme="https://blog.im0o.top/tags/html/"/>
+    
+    <category term="吃点啥" scheme="https://blog.im0o.top/tags/%E5%90%83%E7%82%B9%E5%95%A5/"/>
+    
+    <category term="vue.js" scheme="https://blog.im0o.top/tags/vue-js/"/>
+    
+    <category term="elementui" scheme="https://blog.im0o.top/tags/elementui/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>使用Winhex进行数据恢复（11）</title>
+    <link href="https://blog.im0o.top/posts/3dd75753.html"/>
+    <id>https://blog.im0o.top/posts/3dd75753.html</id>
+    <published>2021-12-08T06:48:55.000Z</published>
+    <updated>2022-05-24T06:19:06.175Z</updated>
+    
+    
+    <summary type="html">知识点总览：1.exFAT 文件系统的特点&lt;br /&gt;2.exFAT 文件系统的结构&lt;br /&gt;3.exFAT 文件系统的 DBR 分析</summary>
+    
+    
+    
+    <category term="Winhex数据恢复教程" scheme="https://blog.im0o.top/categories/Winhex%E6%95%B0%E6%8D%AE%E6%81%A2%E5%A4%8D%E6%95%99%E7%A8%8B/"/>
+    
+    
+    <category term="Winhex" scheme="https://blog.im0o.top/tags/Winhex/"/>
+    
+    <category term="数据恢复" scheme="https://blog.im0o.top/tags/%E6%95%B0%E6%8D%AE%E6%81%A2%E5%A4%8D/"/>
+    
+    <category term="exFAT" scheme="https://blog.im0o.top/tags/exFAT/"/>
+    
+    <category term="文件系统" scheme="https://blog.im0o.top/tags/%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>使用Winhex进行数据恢复（10）</title>
+    <link href="https://blog.im0o.top/posts/9907963b.html"/>
+    <id>https://blog.im0o.top/posts/9907963b.html</id>
+    <published>2021-12-07T08:14:45.000Z</published>
+    <updated>2022-05-24T06:19:06.175Z</updated>
+    
+    
+    <summary type="html">知识点总览：1.GPT 磁盘分区的特点&lt;br/&gt;2.GPT 磁盘分区的结构&lt;br/&gt;3.U 盘 的工作模式</summary>
+    
+    
+    
+    <category term="Winhex数据恢复教程" scheme="https://blog.im0o.top/categories/Winhex%E6%95%B0%E6%8D%AE%E6%81%A2%E5%A4%8D%E6%95%99%E7%A8%8B/"/>
+    
+    
+    <category term="数据恢复" scheme="https://blog.im0o.top/tags/%E6%95%B0%E6%8D%AE%E6%81%A2%E5%A4%8D/"/>
+    
+    <category term="GPT" scheme="https://blog.im0o.top/tags/GPT/"/>
+    
+    <category term="USB 工作模式" scheme="https://blog.im0o.top/tags/USB-%E5%B7%A5%E4%BD%9C%E6%A8%A1%E5%BC%8F/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>使用Winhex进行数据恢复（9）</title>
+    <link href="https://blog.im0o.top/posts/85e961fa.html"/>
+    <id>https://blog.im0o.top/posts/85e961fa.html</id>
+    <published>2021-12-03T02:18:21.000Z</published>
+    <updated>2022-05-24T06:19:06.163Z</updated>
+    
+    
+    <summary type="html">知识点总览：NTFS 删除文件的底层分析</summary>
+    
+    
+    
+    <category term="Winhex数据恢复教程" scheme="https://blog.im0o.top/categories/Winhex%E6%95%B0%E6%8D%AE%E6%81%A2%E5%A4%8D%E6%95%99%E7%A8%8B/"/>
+    
+    
+    <category term="Winhex" scheme="https://blog.im0o.top/tags/Winhex/"/>
+    
+    <category term="数据恢复" scheme="https://blog.im0o.top/tags/%E6%95%B0%E6%8D%AE%E6%81%A2%E5%A4%8D/"/>
+    
+    <category term="NTFS" scheme="https://blog.im0o.top/tags/NTFS/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>使用Winhex进行数据恢复（8）</title>
+    <link href="https://blog.im0o.top/posts/3d55069f.html"/>
+    <id>https://blog.im0o.top/posts/3d55069f.html</id>
+    <published>2021-12-02T01:14:30.000Z</published>
+    <updated>2022-05-24T06:19:06.165Z</updated>
+    
+    
+    <summary type="html">知识点总览：NTFS 常见元文件分析&lt;br/&gt;多种方法计算 NTFS 分区大小&lt;br /&gt;实例：恢复丢失 DBR 的 NTFS 分区&lt;br /&gt;实例：从 NTFS 分区提取文件</summary>
+    
+    
+    
+    <category term="Winhex数据恢复教程" scheme="https://blog.im0o.top/categories/Winhex%E6%95%B0%E6%8D%AE%E6%81%A2%E5%A4%8D%E6%95%99%E7%A8%8B/"/>
+    
+    
+    <category term="Winhex" scheme="https://blog.im0o.top/tags/Winhex/"/>
+    
+    <category term="数据恢复" scheme="https://blog.im0o.top/tags/%E6%95%B0%E6%8D%AE%E6%81%A2%E5%A4%8D/"/>
+    
+    <category term="NTFS" scheme="https://blog.im0o.top/tags/NTFS/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>皮丘Bot - 基于 Pichubot 开发的定制化QQ机器人</title>
+    <link href="https://blog.im0o.top/posts/4701195e.html"/>
+    <id>https://blog.im0o.top/posts/4701195e.html</id>
+    <published>2021-11-26T02:07:52.000Z</published>
+    <updated>2022-05-24T06:19:06.147Z</updated>
+    
+    
+    <summary type="html">皮丘Bot 大学习功能开发笔记与踩坑记录</summary>
+    
+    
+    
+    <category term="杂谈/踩坑笔记" scheme="https://blog.im0o.top/categories/%E6%9D%82%E8%B0%88-%E8%B8%A9%E5%9D%91%E7%AC%94%E8%AE%B0/"/>
+    
+    
+    <category term="go" scheme="https://blog.im0o.top/tags/go/"/>
+    
+    <category term="Pichubot" scheme="https://blog.im0o.top/tags/Pichubot/"/>
+    
+    <category term="QQ机器人" scheme="https://blog.im0o.top/tags/QQ%E6%9C%BA%E5%99%A8%E4%BA%BA/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>使用Winhex进行数据恢复（7）</title>
+    <link href="https://blog.im0o.top/posts/653616c9.html"/>
+    <id>https://blog.im0o.top/posts/653616c9.html</id>
+    <published>2021-11-22T10:26:30.000Z</published>
+    <updated>2022-05-24T06:19:06.166Z</updated>
+    
+    
+    <summary type="html">知识点总览：1.NTFS文件记录的常见属性&lt;br&gt;2.各类文件、文件夹的常用属性&lt;br&gt;3.各项属性详解</summary>
+    
+    
+    
+    <category term="Winhex数据恢复教程" scheme="https://blog.im0o.top/categories/Winhex%E6%95%B0%E6%8D%AE%E6%81%A2%E5%A4%8D%E6%95%99%E7%A8%8B/"/>
+    
+    
+    <category term="Winhex" scheme="https://blog.im0o.top/tags/Winhex/"/>
+    
+    <category term="数据恢复" scheme="https://blog.im0o.top/tags/%E6%95%B0%E6%8D%AE%E6%81%A2%E5%A4%8D/"/>
+    
+    <category term="NTFS" scheme="https://blog.im0o.top/tags/NTFS/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>使用Winhex进行数据恢复（6）</title>
+    <link href="https://blog.im0o.top/posts/dd8a71ac.html"/>
+    <id>https://blog.im0o.top/posts/dd8a71ac.html</id>
+    <published>2021-11-21T10:59:34.000Z</published>
+    <updated>2022-05-24T06:19:06.166Z</updated>
+    
+    
+    <summary type="html">知识点总览：1.NTFS 分区结构文件记录分析&lt;br&gt;2.NTFS 文件记录头的结构&lt;br&gt;3.NTFS 文件记录中属性的结构</summary>
+    
+    
+    
+    <category term="Winhex数据恢复教程" scheme="https://blog.im0o.top/categories/Winhex%E6%95%B0%E6%8D%AE%E6%81%A2%E5%A4%8D%E6%95%99%E7%A8%8B/"/>
+    
+    
+    <category term="数据恢复" scheme="https://blog.im0o.top/tags/%E6%95%B0%E6%8D%AE%E6%81%A2%E5%A4%8D/"/>
+    
+    <category term="NTFS" scheme="https://blog.im0o.top/tags/NTFS/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>使用Winhex进行数据恢复（索引）</title>
+    <link href="https://blog.im0o.top/posts/1aa64c01.html"/>
+    <id>https://blog.im0o.top/posts/1aa64c01.html</id>
+    <published>2021-11-21T10:39:53.000Z</published>
+    <updated>2022-05-24T06:19:06.165Z</updated>
+    
+    
+    <summary type="html">本篇将以知识点的形式对所有的数据恢复教程文章进行索引，以便于更快的查找。</summary>
+    
+    
+    
+    <category term="Winhex数据恢复教程" scheme="https://blog.im0o.top/categories/Winhex%E6%95%B0%E6%8D%AE%E6%81%A2%E5%A4%8D%E6%95%99%E7%A8%8B/"/>
+    
+    
+    <category term="Winhex" scheme="https://blog.im0o.top/tags/Winhex/"/>
+    
+    <category term="数据恢复" scheme="https://blog.im0o.top/tags/%E6%95%B0%E6%8D%AE%E6%81%A2%E5%A4%8D/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>使用 Vercel + github 部署 hexo 博客</title>
+    <link href="https://blog.im0o.top/posts/2ace8b97.html"/>
+    <id>https://blog.im0o.top/posts/2ace8b97.html</id>
+    <published>2021-11-15T12:43:53.000Z</published>
+    <updated>2022-05-24T06:19:06.175Z</updated>
+    
+    
+    <summary type="html">本站已迁移至 Vercel 页面托管服务，博客链接更新&lt;br&gt;你无需配置繁琐的 Github Actions，只需要将代码推送至你的仓库（可以是私有的），Vercel 会自动克隆代码并按照设定的方式部署。</summary>
+    
+    
+    
+    <category term="一些教程" scheme="https://blog.im0o.top/categories/%E4%B8%80%E4%BA%9B%E6%95%99%E7%A8%8B/"/>
+    
+    
+    <category term="Hexo" scheme="https://blog.im0o.top/tags/Hexo/"/>
+    
+    <category term="Github" scheme="https://blog.im0o.top/tags/Github/"/>
+    
+    <category term="Vercel" scheme="https://blog.im0o.top/tags/Vercel/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>ClipboardBypass - 绕过超星学习通粘贴限制</title>
+    <link href="https://blog.im0o.top/posts/b84fa704.html"/>
+    <id>https://blog.im0o.top/posts/b84fa704.html</id>
+    <published>2021-11-02T02:07:17.000Z</published>
+    <updated>2022-05-24T06:19:06.124Z</updated>
+    
+    
+    <summary type="html">使用 AutoHotKey 编写绕过超星学习通粘贴限制的简单脚本</summary>
+    
+    
+    
+    
+  </entry>
+  
+  <entry>
+    <title>使用Winhex进行数据恢复（5）</title>
+    <link href="https://blog.im0o.top/posts/cf3fde42.html"/>
+    <id>https://blog.im0o.top/posts/cf3fde42.html</id>
+    <published>2021-10-27T00:49:08.000Z</published>
+    <updated>2022-05-24T06:19:06.166Z</updated>
+    
+    
+    <summary type="html">知识点总览：1.NTFS 文件系统的大致结构&lt;br/&gt;2.NTFS 文件系统的 DBR 恢复&lt;br/&gt;3.NTFS 文件系统的元文件 $MFT</summary>
+    
+    
+    
+    <category term="Winhex数据恢复教程" scheme="https://blog.im0o.top/categories/Winhex%E6%95%B0%E6%8D%AE%E6%81%A2%E5%A4%8D%E6%95%99%E7%A8%8B/"/>
+    
+    
+    <category term="Winhex" scheme="https://blog.im0o.top/tags/Winhex/"/>
+    
+    <category term="数据恢复" scheme="https://blog.im0o.top/tags/%E6%95%B0%E6%8D%AE%E6%81%A2%E5%A4%8D/"/>
+    
+    <category term="FAT32" scheme="https://blog.im0o.top/tags/FAT32/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>新Winhex数据恢复题库</title>
+    <link href="https://blog.im0o.top/posts/winhex-tiku.html"/>
+    <id>https://blog.im0o.top/posts/winhex-tiku.html</id>
+    <published>2021-10-21T11:51:16.000Z</published>
+    <updated>2022-05-24T06:19:06.147Z</updated>
+    
+    
+    <summary type="html">新的 Winhex 数据恢复教程 配套题库发布！&lt;br/&gt;使用 VuePress + GithubPages服务进行搭建</summary>
+    
+    
+    
+    <category term="Winhex数据恢复教程" scheme="https://blog.im0o.top/categories/Winhex%E6%95%B0%E6%8D%AE%E6%81%A2%E5%A4%8D%E6%95%99%E7%A8%8B/"/>
+    
+    
+    <category term="Winhex" scheme="https://blog.im0o.top/tags/Winhex/"/>
+    
+    <category term="数据恢复" scheme="https://blog.im0o.top/tags/%E6%95%B0%E6%8D%AE%E6%81%A2%E5%A4%8D/"/>
+    
+    <category term="VuePress" scheme="https://blog.im0o.top/tags/VuePress/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>使用Winhex进行数据恢复（4）</title>
+    <link href="https://blog.im0o.top/posts/7783b927.html"/>
+    <id>https://blog.im0o.top/posts/7783b927.html</id>
+    <published>2021-10-21T11:51:00.000Z</published>
+    <updated>2022-05-24T06:19:06.169Z</updated>
+    
+    
+    <summary type="html">知识点总览：1. FAT32 文件系统删除文件的分析&lt;br/&gt;2.FAT32 文件系统删除文件后目录项起始簇号高位清零的分析&lt;br/&gt;3.实例：恢复 FAT32 中被删除的文件</summary>
+    
+    
+    
+    <category term="Winhex数据恢复教程" scheme="https://blog.im0o.top/categories/Winhex%E6%95%B0%E6%8D%AE%E6%81%A2%E5%A4%8D%E6%95%99%E7%A8%8B/"/>
+    
+    
+    <category term="Winhex" scheme="https://blog.im0o.top/tags/Winhex/"/>
+    
+    <category term="数据恢复" scheme="https://blog.im0o.top/tags/%E6%95%B0%E6%8D%AE%E6%81%A2%E5%A4%8D/"/>
+    
+    <category term="FAT32" scheme="https://blog.im0o.top/tags/FAT32/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>使用 Gitee/Github + PicGo 实现高速稳定图床</title>
+    <link href="https://blog.im0o.top/posts/fbb2e56c.html"/>
+    <id>https://blog.im0o.top/posts/fbb2e56c.html</id>
+    <published>2021-10-17T11:41:00.000Z</published>
+    <updated>2022-05-24T06:19:06.177Z</updated>
+    
+    
+    <summary type="html">白嫖Gitee/Github仓库，使用软件Picgo进行快捷图片上传&lt;br&gt;将PicGo与Typora结合使用快速上传图片</summary>
+    
+    
+    
+    <category term="一些教程" scheme="https://blog.im0o.top/categories/%E4%B8%80%E4%BA%9B%E6%95%99%E7%A8%8B/"/>
+    
+    
+    <category term="图床" scheme="https://blog.im0o.top/tags/%E5%9B%BE%E5%BA%8A/"/>
+    
+    <category term="图片" scheme="https://blog.im0o.top/tags/%E5%9B%BE%E7%89%87/"/>
+    
+  </entry>
+  
+</feed>
